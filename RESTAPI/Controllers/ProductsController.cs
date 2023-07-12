@@ -41,17 +41,16 @@ namespace RESTAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(Product product)
         {
+            product.CategoryName = null;
             await _productService.CreateAsync(product);
-            if(product != null) {
-                return Ok(product);
-            }
-            return NotFound();
+            return Ok(product);
         }
 
         // PUT api/ProductsController/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, [FromBody] Product Newproduct)
         {
+            Newproduct.CategoryName = null;
             var checkExistance = await _productService.GetById(Newproduct.Id);
             if (checkExistance == null) {
                 return NotFound();

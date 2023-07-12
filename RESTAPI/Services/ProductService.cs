@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using RESTAPI.DataBase;
 using RESTAPI.Models;
@@ -22,8 +23,28 @@ namespace RESTAPI.Services
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            var products = await _productcollection.Find(_ => true).ToListAsync();
-            return  products;
+            var pipeline = new BsonDocument[]
+            {
+                new BsonDocument("$lookup", new BsonDocument
+                {
+                    {"from","CategoryCollection"},
+                    {"localField","CategoryId"},
+                    {"foreignField","_id"},
+                    {"as","product_category" }
+                }),
+                new BsonDocument("$unwind","$product_category"),
+                new BsonDocument("$project",new BsonDocument
+                {
+                    {"_id",1 },
+                    {"CategoryId",1 },
+                    {"ProductName",1 },
+                    {"CategoryName","$product_category.CategoryName" }
+                })
+            };
+
+            var results = await _productcollection.Aggregate<Product>(pipeline).ToListAsync();
+            return results;
+
         }
         public async Task<Product> GetById(string id)
         {
