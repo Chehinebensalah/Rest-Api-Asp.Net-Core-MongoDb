@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 
 //SERVICES 
 builder.Services.AddTransient<ICategoryService,CategoryService>();
+builder.Services.AddTransient<IProductService, ProductService>();
+
 
 // database Config 
 builder.Services.Configure<DataBaseSettings>(

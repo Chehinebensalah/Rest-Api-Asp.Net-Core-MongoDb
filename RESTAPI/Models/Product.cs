@@ -10,6 +10,7 @@ namespace RESTAPI.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string? ProductName { get; set; }
-        public int CategoryId { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string CategoryId { get; set; }
     }
 }
